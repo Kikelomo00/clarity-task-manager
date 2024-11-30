@@ -126,3 +126,144 @@
         )
     )
 )
+
+;; Read-only function to retrieve the task details for a given user.
+;; This function returns the task (title and completed status) if found.
+(define-read-only (get-task (user principal))
+    (match (map-get? tasks user)
+        task (ok task)  ;; Return the task if found
+        ERR-NOT-FOUND  ;; Return an error if no task is found
+    )
+)
+
+;; Read-only function to get the completion status of a task for a given user.
+;; This function returns the "completed" status of the task if found.
+(define-read-only (get-task-status (user principal))
+    (match (map-get? tasks user)
+        task (ok (get completed task))  ;; Return the completion status if the task exists
+        ERR-NOT-FOUND  ;; Return an error if the task is not found
+    )
+)
+
+;; Read-only function to retrieve the task title for a given user.
+;; This function returns the title of the task if found.
+(define-read-only (get-task-title (user principal))
+    (match (map-get? tasks user)
+        task (ok (get title task))  ;; Return the title of the task if found
+        ERR-NOT-FOUND  ;; Return an error if no task is found
+    )
+)
+
+;; Read-only function to check if the task is completed for a given user.
+;; This function returns true if the task is completed, false otherwise.
+(define-read-only (is-task-completed (user principal))
+    (match (map-get? tasks user)
+        task (ok (get completed task))  ;; Return the completion status if the task exists
+        ERR-NOT-FOUND  ;; Return an error if the task is not found
+    )
+)
+
+;; Read-only function to retrieve both the title and completion status of a task for a given user.
+;; This function returns an object containing the task's title and completion status if found.
+(define-read-only (get-task-info (user principal))
+    (match (map-get? tasks user)
+        task (ok {
+            title: (get title task),
+            completed: (get completed task)
+        })  ;; Return both the title and completion status if the task exists
+        ERR-NOT-FOUND  ;; Return an error if no task is found
+    )
+)
+
+;; Read-only function to check if a task exists for a given user.
+;; This function returns true if the task exists, otherwise false.
+(define-read-only (does-task-exist (user principal))
+    (match (map-get? tasks user)
+        task (ok true)  ;; Return true if the task exists
+        (ok false)     ;; Return false if no task is found
+    )
+)
+
+;; Read-only function to check if the task is still active (not completed) for a given user.
+;; This function returns true if the task is active, false if completed.
+(define-read-only (is-task-active (user principal))
+    (match (map-get? tasks user)
+        task (ok (not (get completed task)))  ;; Return true if task is not completed
+        ERR-NOT-FOUND  ;; Return an error if the task is not found
+    )
+)
+
+;; Read-only function to retrieve all tasks for a given user.
+;; This function returns the title and completion status of the task for the user.
+(define-read-only (get-all-tasks (user principal))
+    (match (map-get? tasks user)
+        task (ok {
+            title: (get title task),
+            completed: (get completed task)
+        })
+        ERR-NOT-FOUND
+    )
+)
+
+;; Read-only function to count tasks for a given user.
+;; It will return 1 if a task exists, otherwise 0.
+(define-read-only (get-task-count (user principal))
+    (match (map-get? tasks user)
+        task (ok 1)   ;; Return 1 if the task exists
+        (ok 0)        ;; Return 0 if no task exists
+    )
+)
+
+;; Read-only function to check if the task is completed for a given user.
+;; This function returns a string message: "completed" or "not completed".
+(define-read-only (get-task-status-message (user principal))
+    (match (map-get? tasks user)
+        task (ok (if (get completed task) "completed" "not completed"))  ;; Return message based on task completion
+        ERR-NOT-FOUND  ;; Return an error if the task is not found
+    )
+)
+
+;; Read-only function to count how many tasks are completed for a given user.
+;; It will return 1 if the task is completed, otherwise 0.
+(define-read-only (get-completed-task-count (user principal))
+    (match (map-get? tasks user)
+        task (ok (if (get completed task) 1 0))  ;; Return 1 if completed, otherwise 0
+        ERR-NOT-FOUND  ;; Return an error if the task is not found
+    )
+)
+
+;; Read-only function to get the task completion status as a boolean string ("completed" or "not completed").
+(define-read-only (get-task-completion-status-as-string (user principal))
+    (match (map-get? tasks user)
+        task (ok (if (get completed task) "completed" "not completed"))
+        ERR-NOT-FOUND
+    )
+)
+
+;; Read-only function to retrieve the completion percentage of the task.
+;; This function returns 0% if the task is not completed, and 100% if the task is completed.
+(define-read-only (get-task-completion-percentage (user principal))
+    (match (map-get? tasks user)
+        task (ok (if (get completed task) 100 0))  ;; Return 100 if completed, otherwise 0
+        ERR-NOT-FOUND  ;; Return an error if the task is not found
+    )
+)
+
+;; Read-only function to check if a task is still pending (not completed).
+;; This function returns true if the task is pending (not completed).
+(define-read-only (is-task-pending (user principal))
+    (match (map-get? tasks user)
+        task (ok (not (get completed task)))  ;; Return true if task is pending (not completed)
+        ERR-NOT-FOUND  ;; Return an error if the task is not found
+    )
+)
+
+;; Read-only function to retrieve the length of the task title.
+;; This function returns the length of the title if the task exists.
+(define-read-only (get-task-title-length (user principal))
+    (match (map-get? tasks user)
+        task (ok (len (get title task)))  ;; Return the length of the title if the task exists
+        ERR-NOT-FOUND  ;; Return an error if the task is not found
+    )
+)
+
